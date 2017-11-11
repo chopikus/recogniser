@@ -158,8 +158,8 @@ double countSomeShit(Mat image)
 {
 
     resize(image, image, Size(100,100));
-    imshow("shiiiiiiiiiiiiiit", image);
-    waitKey(0);
+    //imshow("shiiiiiiiiiiiiiit", image);
+    //waitKey(0);
     Rect r = Rect(15, 15, 70, 70);
     image = Mat(image, r);
     Mat gray = image.clone();
@@ -168,7 +168,7 @@ double countSomeShit(Mat image)
     Canny(gray, gray, 0, 30);
     image = gray.clone();
     //imshow("abcd", image);
-    waitKey();
+    //waitKey();
     double res=0,w=0,b=0;
     for(int y=0; y<image.rows; y++)
     {
@@ -301,20 +301,20 @@ void forPaint()
         shit sh = (*it);
         Rect r = Rect(sh.first.first, sh.first.second, sh.second.first, sh.second.second);
         double SHHIT = countSomeShit(Mat(src, r));
-
+        //cout << SHHIT<<endl;
       if (SHHIT>8.7 && SHHIT<10.1)
         {
             rectangle(src, r, Scalar(0, 0, 255), 5);
             //cout << "arrw"<<endl;
             //arrw
         }
-        if (SHHIT<7.7)
+        if (SHHIT>=6 && SHHIT<=8.7)
         {
             //cout << "volt"<<endl;
             rectangle(src, r, Scalar(0, 255, 255), 5);
             //volt
         }
-        if (SHHIT>=7.7 && SHHIT<=8.7)
+        if (SHHIT<6)
         {
            // cout << "ampr"<<endl;
             rectangle(src, r, Scalar(0, 255, 0), 5);
@@ -378,19 +378,19 @@ void forPrint()
         //rectangle(src, r, Scalar(255, 0, 0), 5);
         Mat circleInRect = Mat(src, r);
         double SHHIT = countSomeShit(circleInRect);
-        if (SHHIT>=8.7 && SHHIT<=10)
+        if (SHHIT>=8.5 && SHHIT<=10)
         {
             rectangle(src, r, Scalar(0, 0, 255), 5);
           //  cout << "arrw"<<endl;
             //arrw
         }
-        if (SHHIT<7.37)
+        if (SHHIT<7.12)
         {
             //cout << "volt"<<endl;
             rectangle(src, r, Scalar(0, 255, 255), 5);
             //volt
         }
-        if (SHHIT>=7.37 && SHHIT<=8)
+        if (SHHIT>=7.12 && SHHIT<=8.4)
         {
             //cout << "ampr"<<endl;
             rectangle(src, r, Scalar(0, 255, 0), 5);
@@ -431,7 +431,6 @@ void forPrint()
 }
 int main(int argc, char** argv)
 {
-    training();
     string s="";
     cout << "Is it a photo, paint, or printed? (ph/pa/pr)"<<endl;
     cin >> s;
@@ -528,4 +527,3 @@ int main(int argc, char** argv)
     imshow("shiit", src);
     waitKey();
 }
-
