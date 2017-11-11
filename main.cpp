@@ -158,8 +158,8 @@ double countSomeShit(Mat image)
 {
 
     resize(image, image, Size(100,100));
-    //imshow("shiiiiiiiiiiiiiit", image);
-    //waitKey(0);
+    imshow("shiiiiiiiiiiiiiit", image);
+    waitKey(0);
     Rect r = Rect(15, 15, 70, 70);
     image = Mat(image, r);
     Mat gray = image.clone();
@@ -476,7 +476,7 @@ int main(int argc, char** argv)
         Mat circleInRect = Mat(src, r);
         double SHHIT = countSomeShit(circleInRect);
         cout << SHHIT << endl;
-        if (SHHIT>=9.15)
+        if (SHHIT>=8.6)
         {
             rectangle(src, r, Scalar(0, 0, 255), 5);
           //  cout << "arrw"<<endl;
@@ -493,7 +493,7 @@ int main(int argc, char** argv)
             //cout << "ampr"<<endl;
             rectangle(src, r, Scalar(0, 255, 0), 5);
         }
-        if (SHHIT>=8 && SHHIT<=9.15)
+        if (SHHIT>=8 && SHHIT<=8.6)
         {
             //cout << "bulb"<<endl;
             rectangle(src, r, Scalar(255, 0, 0), 5);
