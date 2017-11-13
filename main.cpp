@@ -9,7 +9,7 @@ using namespace std;
 int thresh = 50, N = 11;
 int a = 0;
 vector<Mat> _all;
-
+string FILE_NAME="";
 double countSomeShit(Mat image);
 static double angle( Point pt1, Point pt2, Point pt0 )
 {
@@ -190,7 +190,7 @@ double countSomeShit(Mat image)
 }
 void forPaint()
 {
-    Mat src = imread("read.bmp");
+    Mat src = imread(FILE_NAME);
     Mat image;
     cvtColor(src, image, CV_BGR2GRAY);
     //freopen(output_name.c_str(), "w",stdout);
@@ -288,9 +288,9 @@ void forPaint()
         r.x-=20;
         if (r.y>20)
         r.y-=20;
-        if (r.height<src.size().height-20)
+        if (r.height+r.y<src.size().height-20)
         r.height+=20;
-        if (r.width<src.size().width-20)
+        if (r.width+r.x<src.size().width-20)
         r.width+=20;
 
         rectangle(src, r, Scalar(128, 0, 128), 5);
@@ -301,20 +301,20 @@ void forPaint()
         shit sh = (*it);
         Rect r = Rect(sh.first.first, sh.first.second, sh.second.first, sh.second.second);
         double SHHIT = countSomeShit(Mat(src, r));
-        //cout << SHHIT<<endl;
-      if (SHHIT>8.7 && SHHIT<10.1)
+        cout << SHHIT<<endl;
+      if (SHHIT>8.3 && SHHIT<10.1)
         {
             rectangle(src, r, Scalar(0, 0, 255), 5);
             //cout << "arrw"<<endl;
             //arrw
         }
-        if (SHHIT>=6 && SHHIT<=8.7)
+        if (SHHIT<7.15)
         {
             //cout << "volt"<<endl;
             rectangle(src, r, Scalar(0, 255, 255), 5);
             //volt
         }
-        if (SHHIT<6)
+        if (SHHIT>=7.15 && SHHIT<8.3)
         {
            // cout << "ampr"<<endl;
             rectangle(src, r, Scalar(0, 255, 0), 5);
@@ -350,7 +350,7 @@ void forPrint()
       vector<Point> res_circles;
     //namedWindow( wndname, 1 );
     vector<vector<Point> > squares;
-    Mat image = imread("printed.jpg");
+    Mat image = imread(FILE_NAME);
 
     findSquares(image, squares);
     Mat src = image.clone();
@@ -378,7 +378,8 @@ void forPrint()
         //rectangle(src, r, Scalar(255, 0, 0), 5);
         Mat circleInRect = Mat(src, r);
         double SHHIT = countSomeShit(circleInRect);
-        if (SHHIT>=8.5 && SHHIT<=10)
+        cout << SHHIT<<endl;
+        if (SHHIT>=8.6 && SHHIT<=10)
         {
             rectangle(src, r, Scalar(0, 0, 255), 5);
           //  cout << "arrw"<<endl;
@@ -390,7 +391,7 @@ void forPrint()
             rectangle(src, r, Scalar(0, 255, 255), 5);
             //volt
         }
-        if (SHHIT>=7.12 && SHHIT<=8.4)
+        if (SHHIT>=7.12 && SHHIT<=8.6)
         {
             //cout << "ampr"<<endl;
             rectangle(src, r, Scalar(0, 255, 0), 5);
@@ -431,23 +432,26 @@ void forPrint()
 }
 int main(int argc, char** argv)
 {
-    string s="";
-    cout << "Is it a photo, paint, or printed? (ph/pa/pr)"<<endl;
-    cin >> s;
-    if (s=="pa")
-    {
-        forPaint();
-        return 0;
-    }
-    if (s=="pr")
+    freopen("Data.txt", "r", stdin);
+    bool isAPhoto=0,isPrint=0,isPaint=0;
+    cin >> FILE_NAME;
+    cin >> isAPhoto;
+    cin >> isPrint;
+    cin >> isPaint;
+    if (isPrint)
     {
         forPrint();
+        return 0;
+    }
+    if (isPaint)
+    {
+        forPaint();
         return 0;
     }
     vector<Point> res_circles;
     //namedWindow( wndname, 1 );
     vector<vector<Point> > squares;
-    Mat image = imread("photo.jpg");
+    Mat image = imread(FILE_NAME);
 
     findSquares(image, squares);
     Mat src = image.clone();
@@ -459,6 +463,7 @@ int main(int argc, char** argv)
     HoughCircles( gray, circles, CV_HOUGH_GRADIENT,
                   1, 200, 100, 55, 0, 0 );
     //cout <<"CIRCLES "<< circles.size()<<endl;
+    vector<shit> resVolt, resArrw, resAmpr, resBulb, resRest;
     for( int i = 0;  i < circles.size(); i++ )
     {
         Vec3i c = circles[i];
@@ -476,25 +481,39 @@ int main(int argc, char** argv)
         Mat circleInRect = Mat(src, r);
         double SHHIT = countSomeShit(circleInRect);
         cout << SHHIT << endl;
-        if (SHHIT>=8.6)
+        int x1 = r.x;
+            int y1 = r.y;
+            int x2 = (r.x+r.width);
+            int y2 = (r.y+r.height);
+            shit sh;
+            sh.first.first = x1;
+            sh.first.second = (y1+y2)/2;
+            sh.second.first = x2;
+            sh.second.second = (y1+y2)/2;
+
+        if (SHHIT>=8.58)
         {
             rectangle(src, r, Scalar(0, 0, 255), 5);
+            resArrw.push_back(sh);
           //  cout << "arrw"<<endl;
             //arrw
         }
         if (SHHIT>5 && SHHIT<8)
         {
             //scout << "volt"<<endl;
+            resVolt.push_back(sh);
             rectangle(src, r, Scalar(0, 255, 255), 5);
             //volt
         }
         if (SHHIT<5)
         {
+            resAmpr.push_back(sh);
             //cout << "ampr"<<endl;
             rectangle(src, r, Scalar(0, 255, 0), 5);
         }
-        if (SHHIT>=8 && SHHIT<=8.6)
+        if (SHHIT>=8 && SHHIT<8.58)
         {
+            resBulb.push_back(sh);
             //cout << "bulb"<<endl;
             rectangle(src, r, Scalar(255, 0, 0), 5);
         }
@@ -522,8 +541,80 @@ int main(int argc, char** argv)
 
         Set.insert(make_pair(make_pair(minX, minY), make_pair(maxX, maxY)));
         rectangle(src, Rect(minX, minY, maxX-minX, maxY-minY), Scalar(128, 0, 128), 5);
+                    shit sh;
+            sh.first.first = minX;
+            sh.first.second = (minY+maxY)/2;
+            sh.second.first = maxX;
+            sh.second.second = (minY+maxY)/2;
+        resRest.push_back(sh);
+    }
+   /* cout << "{"<<endl;
+    cout << " \"data\": [ "<<endl;
+    int cccc=1;
+    for (int i=0; i<resArrw.size(); i++)
+    {
+        cout << "{"<<endl;
+        cout << "\"type\": \"e\" ,"<<endl;
+        cout << "\"name\": \"\","<<endl;
+        cout << "\"value\": 0,"<<endl;
+        cout << "\"nodes\": {"<<endl;
+        cout << "\"from\": [1,2],"<<endl;
+        cout << "\"to\": [1,2]"<<endl;
+        cout << "}"<<endl;
+        cout << "}"<<endl;
+        if (cccc!=resArrw.size()+resAmpr.size()+resBulb.size()+resVolt.size()+resRest.size())
+            cout << ",";
+        cccc++;
+    }
+    for (int i=0; i<resAmpr.size(); i++)
+    {
+        cout << "{"<<endl;
+        cout << "\"type\": \"am\" ,"<<endl;
+        cout << "\"name\": \"\","<<endl;
+        cout << "\"value\": 0,"<<endl;
+        cout << "\"nodes\": {"<<endl;
+        cout << "\"from\": [1,2],"<<endl;
+        cout << "\"to\": [1,2]"<<endl;
+        cout << "}"<<endl;
+        cout << "}"<<endl;
+        if (cccc!=resArrw.size()+resAmpr.size()+resBulb.size()+resVolt.size()+resRest.size())
+            cout << ",";
+        cccc++;
+    }
+    for (int i=0; i<resVolt.size(); i++)
+    {
+        cout << "{"<<endl;
+        cout << "\"type\": \"v\" ,"<<endl;
+        cout << "\"name\": \"\","<<endl;
+        cout << "\"value\": 0,"<<endl;
+        cout << "\"nodes\": {"<<endl;
+        cout << "\"from\": [1,2],"<<endl;
+        cout << "\"to\": [1,2]"<<endl;
+        cout << "}"<<endl;
+        cout << "}"<<endl;
+        if (cccc!=resArrw.size()+resAmpr.size()+resBulb.size()+resVolt.size()+resRest.size())
+            cout << ",";
+        cccc++;
     }
 
+    for (int i=0; i<resRest.size(); i++)
+    {
+        cout << "{"<<endl;
+        cout << "\"type\": \"r\" ,"<<endl;
+        cout << "\"name\": \"\","<<endl;
+        cout << "\"value\": 0,"<<endl;
+        cout << "\"nodes\": {"<<endl;
+        cout << "\"from\": [1,2],"<<endl;
+        cout << "\"to\": [1,2]"<<endl;
+        cout << "}"<<endl;
+        cout << "}"<<endl;
+        if (cccc!=resArrw.size()+resAmpr.size()+resBulb.size()+resVolt.size()+resRest.size())
+            cout << ",";
+        cccc++;
+    }
+
+    cout << "]"<<endl;
+    cout << "}";*/
     imshow("shiit", src);
     waitKey();
 }
